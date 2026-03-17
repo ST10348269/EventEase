@@ -1,0 +1,146 @@
+﻿@model IEnumerable<EventEase.Models.Venue>
+
+@{
+    ViewData["Title"] = "Venues Dashboard";
+}
+
+<div class="container-fluid py-4">
+    <!-- Dashboard Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold text-dark mb-1">Venues Dashboard</h1>
+            <p class="text-muted mb-0">Manage all your event venues in one place</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary shadow-sm px-4">
+            <i class="bi bi-plus-lg me-2"></i> Add New Venue
+        </a>
+    </div>
+
+    <!-- Stats Cards Row -->
+    <div class="row mb-5 g-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-primary-subtle rounded-circle p-3">
+                            <i class="bi bi-building fs-4 text-primary"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Total Venues</h6>
+                        <h3 class="fw-bold mb-0">@Model.Count()</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-success-subtle rounded-circle p-3">
+                            <i class="bi bi-people fs-4 text-success"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Total Capacity</h6>
+                        <h3 class="fw-bold mb-0">@Model.Sum(v => v.Capacity)</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-info-subtle rounded-circle p-3">
+                            <i class="bi bi-geo-alt fs-4 text-info"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Unique Locations</h6>
+                        <h3 class="fw-bold mb-0">@Model.Select(v => v.Location).Distinct().Count()</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-warning-subtle rounded-circle p-3">
+                            <i class="bi bi-image fs-4 text-warning"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">With Images</h6>
+                        <h3 class="fw-bold mb-0">@Model.Count(v => !string.IsNullOrEmpty(v.ImageUrl))</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Venues Grid -->
+    <div class="row g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-6 col-xl-4">
+                <div class="card border-0 shadow-sm h-100 venue-card hover-lift">
+                    <div class="card-img-top position-relative" style="height: 180px; overflow: hidden;">
+                        <img src="@item.ImageUrl"
+                             class="w-100 h-100 object-fit-cover"
+                             alt="@item.VenueName"
+                             onerror="this.src='https://via.placeholder.com/400x180?text=No+Image';" />
+                        <div class="position-absolute bottom-0 start-0 end-0 bg-gradient-dark text-white p-3">
+                            <h5 class="mb-1 fw-semibold">@item.VenueName</h5>
+                            <small class="opacity-75"><i class="bi bi-geo-alt me-1"></i>@item.Location</small>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h6 class="text-muted mb-1 small">Capacity</h6>
+                                <h5 class="fw-bold mb-0">@item.Capacity</h5>
+                            </div>
+                            <span class="badge bg-primary-subtle text-primary px-3 py-2">
+                                @(item.Capacity >= 200 ? "Large" : item.Capacity >= 100 ? "Medium" : "Small")
+                            </span>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <a asp-action="Edit" asp-route-id="@item.VenueID"
+                               class="btn btn-sm btn-outline-primary flex-fill">
+                                <i class="bi bi-pencil me-1"></i> Edit
+                            </a>
+                            <a asp-action="Details" asp-route-id="@item.VenueID"
+                               class="btn btn-sm btn-outline-success flex-fill">
+                                <i class="bi bi-eye me-1"></i> Details
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.VenueID"
+                               class="btn btn-sm btn-outline-danger flex-fill">
+                                <i class="bi bi-trash me-1"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center py-5">
+                    <i class="bi bi-building fs-1 d-block mb-3"></i>
+                    <h5>No venues found</h5>
+                    <p class="text-muted">Get started by adding your first venue.</p>
+                    <a asp-action="Create" class="btn btn-primary mt-2">Add Venue</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

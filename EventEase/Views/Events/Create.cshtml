@@ -1,0 +1,54 @@
+﻿@model EventEase.Models.Event
+
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<div class="container mt-4" style="max-width: 700px;">
+    <h2 class="mb-4">Create New Event</h2>
+
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4" role="alert"></div>
+
+        <!-- Event Name -->
+        <div class="mb-3">
+            <label asp-for="EventName" class="form-label">Event Name</label>
+            <input asp-for="EventName" class="form-control" placeholder="e.g. Joburg Music Festival" />
+            <span asp-validation-for="EventName" class="text-danger small"></span>
+        </div>
+
+        <!-- Venue -->
+        <div class="mb-3">
+            <label asp-for="VenueID" class="form-label">Venue</label>
+            <select asp-for="VenueID" class="form-select" asp-items="ViewBag.VenueID">
+                <option value="">— Select venue —</option>
+            </select>
+            <span asp-validation-for="VenueID" class="text-danger small"></span>
+        </div>
+
+        <!-- Event Date -->
+        <div class="mb-3">
+            <label asp-for="EventDate" class="form-label">Date & Time</label>
+            <input asp-for="EventDate" class="form-control" type="datetime-local" />
+            <span asp-validation-for="EventDate" class="text-danger small"></span>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+            <label asp-for="Description" class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="4"
+                      placeholder="Short description of the event..."></textarea>
+            <span asp-validation-for="Description" class="text-danger small"></span>
+        </div>
+
+        <div class="d-flex gap-3 mt-4">
+            <button type="submit" class="btn btn-primary px-5">
+                Create Event
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+

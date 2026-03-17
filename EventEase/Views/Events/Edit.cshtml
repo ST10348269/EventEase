@@ -1,0 +1,109 @@
+﻿@model EventEase.Models.Event
+
+@{
+    ViewData["Title"] = "Edit Event";
+
+    // Assuming controller passes venues via ViewBag.VenueID as SelectList or List<SelectListItem>
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold text-dark mb-1">Edit Event</h1>
+            <p class="text-muted mb-0">Update <strong>@Model.EventName</strong></p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary shadow-sm px-4">
+            <i class="bi bi-arrow-left me-2"></i> Back to Events
+        </a>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+                <div class="card-header bg-gradient-light border-0 py-4 d-flex align-items-center">
+                    <i class="bi bi-calendar-edit me-2 text-primary fs-4"></i>
+                    <h4 class="mb-0 fw-semibold text-dark">Event Details</h4>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none" role="alert"></div>
+                        <input type="hidden" asp-for="EventID" />
+
+                        <!-- Event Name -->
+                        <div class="mb-4">
+                            <label asp-for="EventName" class="form-label fw-medium text-dark">Event Name</label>
+                            <input asp-for="EventName" class="form-control form-control-lg shadow-sm"
+                                   placeholder="e.g. Cape Town Startup Expo 2026" />
+                            <div class="invalid-feedback">
+                                <span asp-validation-for="EventName"></span>
+                            </div>
+                        </div>
+
+                        <!-- Venue -->
+                        <div class="mb-4">
+                            <label asp-for="VenueID" class="form-label fw-medium text-dark">Venue</label>
+                            <select asp-for="VenueID" class="form-select form-select-lg shadow-sm"
+                                    asp-items="ViewBag.VenueID">
+                                <option value="">— Select venue —</option>
+                            </select>
+                            <div class="form-text text-muted mt-1 small">
+                                Change the hosting venue if needed
+                            </div>
+                            <div class="invalid-feedback">
+                                <span asp-validation-for="VenueID"></span>
+                            </div>
+                        </div>
+
+                        <!-- Event Date & Time -->
+                        <div class="mb-4">
+                            <label asp-for="EventDate" class="form-label fw-medium text-dark">Date & Time</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-calendar-event"></i>
+                                </span>
+                                <input asp-for="EventDate" class="form-control shadow-sm"
+                                       type="datetime-local" />
+                            </div>
+                            <div class="form-text text-muted mt-1 small">
+                                Update the scheduled date and time
+                            </div>
+                            <div class="invalid-feedback">
+                                <span asp-validation-for="EventDate"></span>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-5">
+                            <label asp-for="Description" class="form-label fw-medium text-dark">Description</label>
+                            <textarea asp-for="Description" class="form-control shadow-sm"
+                                      rows="6"
+                                      placeholder="Update event description, agenda, speakers, etc..."></textarea>
+                            <div class="invalid-feedback">
+                                <span asp-validation-for="Description"></span>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex gap-3 justify-content-end mt-5 pt-4 border-top">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-5 py-2">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary px-5 py-2 shadow">
+                                <i class="bi bi-floppy me-2"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Optional footer -->
+                <div class="card-footer bg-light border-0 text-center py-3 small text-muted">
+                    Event ID: @Model.EventID • Last modified: @DateTime.Now.ToString("dd MMM yyyy HH:mm")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
