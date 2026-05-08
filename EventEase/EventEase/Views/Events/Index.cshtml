@@ -1,0 +1,174 @@
+﻿@model IEnumerable<EventEase.Models.Event>
+
+@{
+    ViewData["Title"] = "Events Dashboard";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold text-dark mb-1">Events Dashboard</h1>
+            <p class="text-muted mb-0">Manage and overview all your upcoming and past events</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary shadow-sm px-4">
+            <i class="bi bi-plus-lg me-2"></i> Create New Event
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Stats Overview -->
+    <div class="row mb-5 g-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-primary-subtle rounded-circle p-3">
+                            <i class="bi bi-calendar-event fs-4 text-primary"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Total Events</h6>
+                        <h3 class="fw-bold mb-0">@Model.Count()</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-success-subtle rounded-circle p-3">
+                            <i class="bi bi-calendar-check fs-4 text-success"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Upcoming Events</h6>
+                        <h3 class="fw-bold mb-0">
+                            @Model.Count(e => e.EventDate != null && e.EventDate > DateTime.Now)
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-info-subtle rounded-circle p-3">
+                            <i class="bi bi-clock-history fs-4 text-info"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">Past Events</h6>
+                        <h3 class="fw-bold mb-0">
+                            @Model.Count(e => e.EventDate != null && e.EventDate <= DateTime.Now)
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100 bg-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-warning-subtle rounded-circle p-3">
+                            <i class="bi bi-tag fs-4 text-warning"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1">This Month</h6>
+                        <h3 class="fw-bold mb-0">
+                            @Model.Count(e => e.EventDate != null)
+                            
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events Grid -->
+    <div class="row g-4">
+        @foreach (var item in Model.OrderByDescending(e => e.EventDate))
+        {
+            <div class="col-lg-6 col-xl-4">
+                <div class="card border-0 shadow-sm h-100 event-card hover-lift">
+                    <div class="card-body p-4 d-flex flex-column h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="fw-bold mb-0 text-dark">@item.EventName</h5>
+                            <span class="badge @(item.EventDate > DateTime.Now ? "bg-success-subtle text-success" : "bg-secondary-subtle text-secondary") px-3 py-2">
+                                @(item.EventDate > DateTime.Now ? "Upcoming" : "Past")
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <p class="text-muted small mb-1">
+                                <i class="bi bi-calendar-event me-1"></i>
+                                @if (item.EventDate != null)
+                                {
+                                    @item.EventDate.ToString("dd MMM yyyy • HH:mm")
+                                }
+                                else
+                                {
+                                    <span class="fst-italic">No date set</span>
+                                }
+                        </p>
+                    </div>
+
+                    <p class="text-muted flex-grow-1 mb-4">
+                        @(item.Description?.Length > 120
+                                                ? item.Description.Substring(0, 120) + "..."
+                                                : item.Description ?? "No description provided")
+                    </p>
+
+                        <div class="d-flex gap-2 mt-auto">
+                            <a asp-action="Details" asp-route-id="@item.EventID"
+                               class="btn btn-sm btn-outline-primary flex-fill">
+                                <i class="bi bi-eye me-1"></i> Details
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@item.EventID"
+                               class="btn btn-sm btn-outline-secondary flex-fill">
+                                <i class="bi bi-pencil me-1"></i> Edit
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.EventID"
+                               class="btn btn-sm btn-outline-danger flex-fill">
+                                <i class="bi bi-trash me-1"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                }
+
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <div class="alert alert-info text-center py-5 border-0 shadow-sm">
+                    <i class="bi bi-calendar-x fs-1 d-block mb-3 text-muted"></i>
+                    <h5>No events found</h5>
+                    <p class="text-muted mb-3">Start by creating your first event.</p>
+                    <a asp-action="Create" class="btn btn-primary">Create Event</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

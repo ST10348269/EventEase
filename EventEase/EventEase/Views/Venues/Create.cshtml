@@ -1,0 +1,106 @@
+@model EventEase.Models.Venue
+
+@{
+    ViewData["Title"] = "Add New Venue";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold text-dark mb-1">Add New Venue</h1>
+            <p class="text-muted mb-0">Enter the details for your new event space</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary shadow-sm px-4">
+            <i class="bi bi-arrow-left me-2"></i> Back to Venues
+        </a>
+    </div>
+
+    @if (TempData["AlertMessage"] != null)
+    {
+        <div class="alert alert-@TempData["AlertType"] alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["AlertMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+                <div class="card-header bg-gradient-light border-0 py-4">
+                    <h4 class="mb-0 fw-semibold text-dark">
+                        <i class="bi bi-building-add me-2 text-primary"></i>Venue Information
+                    </h4>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="VenueName" class="form-label fw-medium text-dark"></label>
+                            <input asp-for="VenueName" class="form-control form-control-lg shadow-sm"
+                                   placeholder="e.g. Skyline Convention Center" />
+                            <span asp-validation-for="VenueName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Location" class="form-label fw-medium text-dark"></label>
+                            <input asp-for="Location" class="form-control form-control-lg shadow-sm"
+                                   placeholder="e.g. Sandton, Johannesburg" />
+                            <span asp-validation-for="Location" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Capacity" class="form-label fw-medium text-dark"></label>
+                            <div class="input-group input-group-lg">
+                                <input asp-for="Capacity" class="form-control shadow-sm" type="number" min="1" placeholder="e.g. 350" />
+                                <span class="input-group-text bg-light">people</span>
+                            </div>
+                            <span asp-validation-for="Capacity" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Azure Blob Image Upload -->
+                        <div class="mb-5">
+                            <label class="form-label fw-medium text-dark">Venue Image</label>
+                            <input type="file" name="ImageFile" class="form-control form-control-lg shadow-sm"
+                                   accept="image/*" id="imageFileInput" />
+                            <div class="form-text text-muted mt-1 small">
+                                <i class="bi bi-cloud-upload me-1 text-primary"></i>
+                                Image will be uploaded securely to <strong>Azure Blob Storage</strong> (JPG, PNG, GIF — max 10MB)
+                            </div>
+                            <div class="mt-3" id="imagePreviewContainer" style="display:none;">
+                                <small class="text-muted">Preview:</small>
+                                <div class="mt-2 border rounded-3 overflow-hidden shadow-sm text-center" style="height:160px; background:#f8f9fa;">
+                                    <img id="imagePreview" src="#" alt="Preview" style="max-height:160px; max-width:100%; object-fit:cover;" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3 justify-content-end mt-5 pt-4 border-top">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-5 py-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-5 py-2 shadow">
+                                <i class="bi bi-check-lg me-2"></i> Create Venue
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('imageFileInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    document.getElementById('imagePreview').src = ev.target.result;
+                    document.getElementById('imagePreviewContainer').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

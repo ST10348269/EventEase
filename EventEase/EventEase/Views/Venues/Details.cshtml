@@ -1,0 +1,106 @@
+﻿@model EventEase.Models.Venue
+
+@{
+    ViewData["Title"] = "Venue Details";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="fw-bold text-dark mb-1">@Model.VenueName</h1>
+            <p class="text-muted mb-0">Venue information</p>
+        </div>
+        <div class="d-flex gap-3">
+            <a asp-action="Edit" asp-route-id="@Model.VenueID" class="btn btn-primary shadow-sm px-4">
+                <i class="bi bi-pencil me-2"></i> Edit Venue
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary shadow-sm px-4">
+                <i class="bi bi-arrow-left me-2"></i> Back to Venues
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Details Card -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+        <div class="card-body p-0">
+            <div class="row g-0">
+                <!-- Large Image Column (left side on desktop) -->
+                <div class="col-lg-6">
+                    <div class="venue-image-container position-relative h-100">
+                        <img src="@Model.ImageUrl"
+                             class="img-fluid object-fit-cover w-100 h-100"
+                             alt="@Model.VenueName"
+                             onerror="this.src='https://via.placeholder.com/800x600?text=Image+Not+Available';" />
+                        <div class="position-absolute bottom-0 start-0 end-0 bg-gradient-overlay text-white p-4">
+                            <h3 class="mb-1 fw-bold">@Model.VenueName</h3>
+                            <p class="mb-0 opacity-90">
+                                <i class="bi bi-geo-alt-fill me-1"></i>@Model.Location
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details Column (right side on desktop) -->
+                <div class="col-lg-6">
+                    <div class="p-5">
+                        <h4 class="fw-semibold mb-4 border-bottom pb-3">
+                            <i class="bi bi-info-circle me-2 text-primary"></i>
+                            Venue Details
+                        </h4>
+
+                        <dl class="row g-4 mb-0">
+                            <dt class="col-sm-4 fw-medium text-muted">Capacity</dt>
+                            <dd class="col-sm-8">
+                                <span class="fs-4 fw-bold">@Model.Capacity</span>
+                                <span class="text-muted ms-2">people</span>
+                            </dd>
+
+                            <dt class="col-sm-4 fw-medium text-muted">Location</dt>
+                            <dd class="col-sm-8 fs-5">@Model.Location</dd>
+
+                            <dt class="col-sm-4 fw-medium text-muted">Image URL</dt>
+                            <dd class="col-sm-8">
+                                @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                                {
+                                    <a href="@Model.ImageUrl" target="_blank" class="text-primary text-break small">
+                                        @Model.ImageUrl
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted fst-italic">No image provided</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4 fw-medium text-muted">Venue ID</dt>
+                            <dd class="col-sm-8 text-muted small">@Model.VenueID</dd>
+                        </dl>
+
+                        <!-- Quick Stats / Badges (optional enhancement) -->
+                        <div class="mt-5 pt-4 border-top">
+                            <div class="d-flex gap-3 flex-wrap">
+                                <span class="badge bg-primary-subtle text-primary px-3 py-2 fs-6">
+                                    @(Model.Capacity >= 500 ? "Large Venue" :
+                                                                        Model.Capacity >= 200 ? "Medium Venue" : "Small Venue")
+                                </span>
+                                <span class="badge bg-success-subtle text-success px-3 py-2 fs-6">
+                                    Ready for Events
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Actions at bottom -->
+                        <div class="mt-5 pt-4 d-flex gap-3 justify-content-end">
+                            <a asp-action="Delete" asp-route-id="@Model.VenueID"
+                               class="btn btn-outline-danger px-4">
+                                <i class="bi bi-trash me-1"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
